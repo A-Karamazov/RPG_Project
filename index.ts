@@ -175,7 +175,7 @@ function Batalhar() {
 ║               /_/                    \\_\\                     ║
 ╠══════════════════════════════════════════════════════════════╣
 ║ Nome: Bayle, the Dread                                       ║
-║ HP : [${inimigo.hp} / 200]                                             ║
+║ HP : [${inimigo.hp} / 180]                                             ║
 ╚══════════════════════════════════════════════════════════════╝
    ${listaPersonagens[0].nome} - Classe: ${listaPersonagens[0].classe.nomeClasse}  
    HP: ${listaPersonagens[0].classe.hp}   | MP: ${listaPersonagens[0].classe.mp} 
