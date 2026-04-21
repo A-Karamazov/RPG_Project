@@ -28,11 +28,12 @@ type classesPersonagens = {
   agilidade: number;
 }
 
-const pelado: classesPersonagens = { nomeClasse: "Pelado", hp: 50, mp: 0, forca: 1, agilidade: 1 }
-const guerreiro: classesPersonagens = { nomeClasse: "Guerreiro", hp: 150, mp: 30, forca: 5, agilidade: 2 }
-const mago: classesPersonagens = { nomeClasse: "Mago", hp: 80, mp: 100, forca: 2, agilidade: 3 }
+const guerreiro: classesPersonagens = { nomeClasse: "Guerreiro", hp: 150, mp: 30, forca: 4, agilidade: 2 }
+const mago: classesPersonagens = { nomeClasse: "Mago", hp: 100, mp: 100, forca: 5, agilidade: 2 }
 const arqueiro: classesPersonagens = { nomeClasse: "Arqueiro", hp: 120, mp: 50, forca: 3, agilidade: 5 }
 const paladino: classesPersonagens = { nomeClasse: "Paladino", hp: 130, mp: 70, forca: 3, agilidade: 3 }
+
+const inimigo: classesPersonagens = { nomeClasse: "Dragão Ancião", hp: 180, mp: 0, forca: 5, agilidade: 1 }
 
 const listaPersonagens: Personagem[] = [];
 
@@ -41,7 +42,8 @@ function mostrarMenu() {
   console.log("======= Menu =======");
   console.log("1. Adicionar personagem");
   console.log("2. Listar personagens");
-  console.log("3. Sair");
+  console.log("3. Batalhar");
+  console.log("4. Sair");
   return prompt("Escolha uma opção:");
 }
 
@@ -53,7 +55,12 @@ function adicionarPersonagem() {
     return;
   }
 
-  const novoPersonagem = new Personagem(nome, pelado);
+  // if (listaPersonagens.length >= 4) {
+  //   prompt("Sua party já está cheia!");
+  //   return;
+  // }
+
+  const novoPersonagem = new Personagem(nome, guerreiro);
   listaPersonagens.push(novoPersonagem);
 
   console.clear();
@@ -72,8 +79,8 @@ function adicionarPersonagem() {
   const selecionarClasse = Number(entrada);
 
   if (selecionarClasse === null) {
-  prompt('Classe inválida. Pressione Enter para continuar');
-  return;
+    prompt('Classe inválida. Pressione Enter para continuar');
+    return;
   }
   if (selecionarClasse === 1) {
     novoPersonagem.classe = guerreiro;
@@ -99,13 +106,93 @@ function listarPersonagens() {
     prompt('Pressione Enter para continuar');
     return;
   }
-
   for (const personagem of listaPersonagens) {
     console.log(
       '- ', personagem.nome, ` - Classe: ${personagem.classe.nomeClasse} | HP: ${personagem.classe.hp} | MP: ${personagem.classe.mp} | Força: ${personagem.classe.forca} | Agilidade: ${personagem.classe.agilidade}`);
   }
-
   prompt('Pressione Enter para continuar');
+}
+
+function atacar() {
+  console.clear();
+  let dano = listaPersonagens[0].classe.forca * 5;
+  let critico = Math.random() * 5;
+  if (critico > 1) {
+    dano *= 2;
+  }
+  inimigo.hp -= dano;
+  prompt(`Você ataca o inimigo e causa ${dano} de dano! (Pressione Enter para continuar)`);
+  receberDano();
+}
+
+function curar() {
+  let cura = 50;
+  let milagre = Math.random() * 4;
+  if (milagre > 1) {
+    cura = 80;
+  }
+  listaPersonagens[0].classe.hp += cura;
+  listaPersonagens[0].classe.mp -= 30;
+  prompt(`Você se cura e recupera ${cura} de HP! (Pressione Enter para continuar)`);
+  receberDano();
+}
+
+function receberDano() {
+  let danoRecebido = inimigo.forca * 5;
+  let esquiva = (Math.random() * 5) + 1 + listaPersonagens[0].classe.agilidade;
+  if (esquiva > 6) {
+    prompt(`Você esquiva do ataque do inimigo! (Pressione Enter para continuar)`);
+    return;
+  }
+  listaPersonagens[0].classe.hp -= danoRecebido;
+  prompt(`Você recebe ${danoRecebido} de dano! (Pressione Enter para continuar)`);
+}
+
+function Batalhar() {
+  console.clear();
+  console.log(`${listaPersonagens[0].nome} é atacado por um dragão!`);
+
+  while (true) {
+    console.log(`
+╔══════════════════════════════════════════════════════════════╗
+║                        BOSS ENCOUNTER                        ║
+╠══════════════════════════════════════════════════════════════╣
+║                              /\\_/\\\\                          ║
+║                     .-""-._ /     \\\\                         ║
+║                    /       Y  . .  Y                         ║
+║                   /   /\\   |   ^   |                         ║
+║                  /   /  \\  |  ---  |                         ║
+║                 /___/____\\_|       |                         ║
+║                    /  _  \\ |  ___  |                         ║
+║                   /  / \\  \\| /   \\ |                         ║
+║              ____/__/___\\__V/_____\\|____                     ║
+║             /   _    FIRE DRAGON     _  \\                    ║
+║            /___/ \\__________________/ \\__\\                   ║
+║               /_/                    \\_\\                     ║
+╠══════════════════════════════════════════════════════════════╣
+║ Nome: Bayle, the Dread                                       ║
+║ HP : [${inimigo.hp} / 200]                                             ║
+╚══════════════════════════════════════════════════════════════╝
+   ${listaPersonagens[0].nome} - Classe: ${listaPersonagens[0].classe.nomeClasse}  
+   HP: ${listaPersonagens[0].classe.hp}   | MP: ${listaPersonagens[0].classe.mp} 
+   Força: ${listaPersonagens[0].classe.forca} | Agilidade: ${listaPersonagens[0].classe.agilidade}`);
+
+    if (inimigo.hp <= 0) {
+      prompt("Parabéns! Você derrotou o vil Bayle! (Pressione Enter para continuar)");
+      break;
+    }
+    if (listaPersonagens[0].classe.hp <= 0) {
+      prompt("Você foi morto e devorado por Bayle! Game Over, betinha. (Pressione Enter para continuar)");
+      break;
+    }
+    const opcao = prompt("Escolha sua ação: 1 - Atacar | 2 - Curar");
+    if (opcao === "1") {
+      atacar();
+    }
+    if (opcao === "2") {
+      curar();
+    }
+  }
 }
 
 while (true) {
@@ -127,6 +214,11 @@ while (true) {
   }
 
   if (opcao === "3") {
+    Batalhar();
+    continue;
+  }
+
+  if (opcao === "4") {
     console.log("Arrivederci!");
     break;
   }
