@@ -116,7 +116,7 @@ function listarPersonagens() {
 function atacar() {
   console.clear();
   let dano = listaPersonagens[0].classe.forca * 5;
-  let critico = Math.random() * 5;
+  let critico = Math.random() * 4;
   if (critico > 1) {
     dano *= 2;
   }
@@ -126,10 +126,10 @@ function atacar() {
 }
 
 function curar() {
-  let cura = 50;
+  let cura = 40;
   let milagre = Math.random() * 4;
   if (milagre > 1) {
-    cura = 80;
+    cura = 70;
   }
   listaPersonagens[0].classe.hp += cura;
   listaPersonagens[0].classe.mp -= 30;
@@ -139,8 +139,12 @@ function curar() {
 
 function receberDano() {
   let danoRecebido = inimigo.forca * 5;
-  let esquiva = (Math.random() * 5) + 1 + listaPersonagens[0].classe.agilidade;
-  if (esquiva > 6) {
+  let critico = Math.random() * 4;
+  if (critico > 1) {
+    danoRecebido *= 1.5;
+  }
+  let esquiva = (Math.random() * 5) + listaPersonagens[0].classe.agilidade;
+  if (esquiva > 7) {
     prompt(`Você esquiva do ataque do inimigo! (Pressione Enter para continuar)`);
     return;
   }
